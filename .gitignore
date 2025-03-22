@@ -1,0 +1,79 @@
+# Ignorar dependências do Composer
+/vendor/
+
+# Ignorar arquivos de ambiente
+.env
+
+# Ignorar arquivos de cache e logs
+/storage/*
+!/storage/.gitkeep
+
+# Ignorar arquivos de configuração local
+/config/*.local.php
+
+# Ignorar arquivos gerados pelo IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Ignorar arquivos de sessão
+/sessions/
+
+# Ignorar arquivos de banco de dados SQLite
+*.db
+*.sqlite
+
+# Ignorar arquivos de cache do Composer
+/composer.lock
+
+# Ignorar arquivos de log
+*.log
+
+# Ignorar arquivos temporários
+/tmp/
+/temp/
+
+# Ignorar arquivos de cache do PHP
+/app/cache/
+/app/logs/
+
+# Ignorar arquivos de cache do Twig (se usado)
+/var/cache/
+/var/logs/
+
+# Ignorar arquivos de cache do Symfony (se usado)
+/var/cache/
+/var/logs/
+/var/sessions/
+
+# Ignorar arquivos de cache do Laravel (se usado)
+/bootstrap/cache/
+/storage/framework/cache/
+/storage/framework/sessions/
+/storage/framework/views/
+/storage/logs/
+
+# Ignorar arquivos de cache do PHPUnit
+/phpunit.xml
+/phpunit.xml.dist
+
+# Ignorar arquivos de configuração local do PHPUnit
+/phpunit.local.xml
+
+# Ignorar arquivos de cache do Xdebug
+/xdebug.log
+
+# Ignorar arquivos de cache do PHPStan
+/.phpunit.result.cache
+/.php-cs-fixer.cache
+
+# Ignorar arquivos de cache do Psalm
+/.psalm/
+/.psalm-plugin-cache/
+
+# Ignorar arquivos de cache do PHPCS
+/.phpcs-cache/
+
+# Ignorar arquivos de cache do PHPMD
+/.phpmd/
