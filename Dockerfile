@@ -21,8 +21,8 @@ WORKDIR /var/www/html
 # Copiar arquivos do projeto para o contêiner
 COPY . .
 
-# Instalar dependências do Composer
-RUN composer install
+# Instalar dependências do Composer (incluindo firebase/php-jwt)
+RUN composer require firebase/php-jwt && composer install
 
 # Expor a porta do servidor PHP
 EXPOSE 8000

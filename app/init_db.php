@@ -26,12 +26,33 @@ if ($db->exec($query)) {
     echo "Erro ao criar a tabela: " . $db->lastErrorMsg() . "\n";
 }
 
-// Verificar se a tabela foi criada
+// Verificar se a tabela 'passwords' foi criada
 $result = $db->query("SELECT name FROM sqlite_master WHERE type='table' AND name='passwords'");
 if ($result->fetchArray()) {
     echo "A tabela 'passwords' existe no banco de dados.\n";
 } else {
     echo "A tabela 'passwords' NÃO foi criada.\n";
+}
+
+// Criar a tabela 'users' se ela não existir
+$query = "CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL
+)";
+
+if ($db->exec($query)) {
+    echo "Tabela 'users' criada com sucesso!\n";
+} else {
+    echo "Erro ao criar a tabela: " . $db->lastErrorMsg() . "\n";
+}
+
+// Verificar se a tabela 'users' foi criada
+$result = $db->query("SELECT name FROM sqlite_master WHERE type='table' AND name='users'");
+if ($result->fetchArray()) {
+    echo "A tabela 'users' existe no banco de dados.\n";
+} else {
+    echo "A tabela 'users' NÃO foi criada.\n";
 }
 
 $db->close();
