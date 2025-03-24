@@ -1,12 +1,9 @@
-# docker-compose.yml
-version: '3.8'
-
 services:
   app:
     build: .
     container_name: flight_senhas_app
-    volumes:
-      - .:/var/www/html
     ports:
       - "8000:8000"
     restart: unless-stopped
+    volumes:
+      - .:/var/www/html

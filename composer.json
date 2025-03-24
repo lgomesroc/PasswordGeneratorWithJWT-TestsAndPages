@@ -1,6 +1,7 @@
 {
   "require": {
     "mikecao/flight": "^v2.0",
-    "firebase/php-jwt": "^6.11"
+    "firebase/php-jwt": "^6.11",
+    "respect/validation": "^2.4"
   }
 }

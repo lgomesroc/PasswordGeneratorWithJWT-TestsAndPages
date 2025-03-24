@@ -7,6 +7,7 @@ Este projeto é uma API simples para gerenciar senhas, desenvolvida com **Flight
 - **Atualizar senha:** Atualiza uma senha existente com base no ID.
 - **Deletar senha:** Remove uma senha do banco de dados com base no ID.
 - **Autenticação JWT:** Protege a API para que apenas usuários autorizados possam acessar e gerenciar as senhas.
+- **Registro de usuários:** Criação de contas com validação de dados.
 
 ## Tecnologias utilizadas
 - **Backend:** `Flight PHP`
@@ -14,6 +15,18 @@ Este projeto é uma API simples para gerenciar senhas, desenvolvida com **Flight
 - **Containerização:** `Docker`
 - **Gerenciamento de Dependências:** `Composer`
 - **Autenticação:** `JWT` (JSON Web Tokens)
+
+## Endpoints
+```
+#Método	 Endpoint	         Descrição
+3GET	 /	                 Verificar se a API está rodando.
+POST	 /register	         Registrar um novo usuário.
+POST	 /login  	         Realizar login e obter o token JWT.
+POST	 /generate	         Gerar uma nova senha (autenticado).
+GET	 /passwords	         Listar todas as senhas (autenticado).
+PUT	 /passwords/{id}         Atualizar uma senha específica (autenticado).
+DELETE	 /passwords/{id}         Deletar uma senha específica (autenticado).
+```
 
 ## Estrutura das pastas
 ```
@@ -190,6 +203,7 @@ A API estará disponível em http://localhost:8000.
 ## Histórico de Atualizações
    - 22/03/2025: Criação do projeto **PasswordGenerator** com funcionalidades básicas de geração, listagem, atualização e exclusão de senhas.
    - 23/03/2025: Adicionada a funcionalidade de **autenticação JWT** para proteger a API e garantir que apenas usuários autorizados possam acessar e gerenciar as senhas.
+   - 24/03/2025: Adicionada funcionalidade de validação e tratamento de erros.
 
 ## Como Contribuir
    - Contribuições são bem-vindas! Siga os passos abaixo para contribuir com o projeto:
