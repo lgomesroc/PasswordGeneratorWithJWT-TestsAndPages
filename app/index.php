@@ -1,6 +1,6 @@
 <?php
 
-require '../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -61,6 +61,7 @@ Flight::before('start', function() use ($jwtKey) {
 
 // Tratamento global de erros
 Flight::map('error', function(Exception $ex) {
+    header('Content-Type: application/json; charset=utf-8');
     Flight::json([
         "error" => true,
         "message" => $ex->getMessage(),

@@ -8,18 +8,25 @@ Este projeto é uma API simples para gerenciar senhas, desenvolvida com **Flight
 - **Deletar senha:** Remove uma senha do banco de dados com base no ID.
 - **Autenticação JWT:** Protege a API para que apenas usuários autorizados possam acessar e gerenciar as senhas.
 - **Registro de usuários:** Criação de contas com validação de dados.
+- **Tratamento de erros:** Para validar os dados.
+
+---
 
 ## Tecnologias utilizadas
 - **Backend:** `Flight PHP`
-- **Banco de Dados:** `SQLite`
+- **Banco de dados:** `SQLite`
 - **Containerização:** `Docker`
-- **Gerenciamento de Dependências:** `Composer`
+- **Gerenciamento de dependências:** `Composer`
 - **Autenticação:** `JWT` (JSON Web Tokens)
+- **Validação dos dados:** `Respect\Validation`
+- **Testes automatizados:** `PHPUnit`
+
+---
 
 ## Endpoints
 ```
 #Método	 Endpoint	         Descrição
-3GET	 /	                 Verificar se a API está rodando.
+GET	 /	                 Verificar se a API está rodando.
 POST	 /register	         Registrar um novo usuário.
 POST	 /login  	         Realizar login e obter o token JWT.
 POST	 /generate	         Gerar uma nova senha (autenticado).
@@ -28,19 +35,36 @@ PUT	 /passwords/{id}         Atualizar uma senha específica (autenticado).
 DELETE	 /passwords/{id}         Deletar uma senha específica (autenticado).
 ```
 
+---
+
 ## Estrutura das pastas
 ```
 .
-└── PasswordGenerator
-    ├── Dockerfile
-    ├── LICENSE
-    ├── README.md
-    ├── app
-    │   ├── index.php
-    │   └── init_db.php
-    ├── composer.json
-    └── docker-compose.yml
+PasswordGenerator
+├── app
+│   ├── database.db
+│   ├── index.php
+│   └── init_db.php
+├── composer.json
+├── composer.lock
+├── database.db
+├── docker-compose.yml
+├── Dockerfile
+├── LICENSE
+├── phpunit.xml
+├── README.md
+├── tests
+│   ├── Integration
+│   │   ├── GeneratePasswordTest.php
+│   │   ├── ProtectedRouteTest.php
+│   │   └── RegisterRouteTest.php
+│   └── Unit
+│       ├── UserValidationTest.php
+│       └── ValidationTest.php
+
 ```
+
+---
 
 ## Como usar
 ### Pré-requisitos
@@ -76,6 +100,8 @@ Para entrar no contêiner, digite o seguinte comando:
 docker exec -it flight_senhas_app bash
 ```
 
+---
+
 ### Acessar o banco de dados
 Para acessar o SQLite é só digitar o comando abaixo dentro do contêiner.
 ```
@@ -108,67 +134,69 @@ Digitar o seguinte comando dentro do contêiner:
 php app/init_db.php
 ```
 
+---
+
 ### Acesse a API:
 
 A API estará disponível em http://localhost:8000.
 
 ### Rotas da API
 #### 1. Rota Principal
-   - **Método:** `GET`
-   - **URL:** `/`
-   - **Descrição:** Retorna uma mensagem indicando que a API está rodando.
+- **Método:** `GET`
+- **URL:** `/`
+- **Descrição:** Retorna uma mensagem indicando que a API está rodando.
    ```
    curl http://localhost:8000/
    ```
-   - **Resposta:**
+- **Resposta:**
    ```
    {"message":"Gerador de senhas API está rodando"}
    ```
 
 #### 2. Registrar Usuário
-   - **Método:** `POST`
-   - **URL:** `/register`
-   - **Descrição:** Registra um novo usuário no sistema.
+- **Método:** `POST`
+- **URL:** `/register`
+- **Descrição:** Registra um novo usuário no sistema.
    ```
    curl -X POST -H "Content-Type: application/json" -d '{"username":"luciano","password":"senha123"}' http://localhost:8000/register
    ```
-   - **Resposta:**
+- **Resposta:**
    ```
    {"message":"Usuário registrado com sucesso!"}
    ```
 
 ### 3. Fazer Login
-   - **Método:** `POST`
-   - **URL:** `/login`
-   - **Descrição:** Autentica o usuário e retorna um token JWT.
+- **Método:** `POST`
+- **URL:** `/login`
+- **Descrição:** Autentica o usuário e retorna um token JWT.
    ```
    curl -X POST -H "Content-Type: application/json" -d '{"username":"luciano","password":"senha123"}' http://localhost:8000/login
    ```
-   - **Resposta:**
+- **Resposta:**
    ```
    {"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."}
    ```
 
 ### 4. Gerar Senha
-   - **Método:** `POST`
-   - **URL:** `/generate`
-   - **Descrição:** Gera uma senha aleatória de 16 caracteres e a salva no banco de dados.
+- **Método:** `POST`
+- **URL:** `/generate`
+- **Descrição:** Gera uma senha aleatória de 16 caracteres e a salva no banco de dados.
    ```
    curl -X POST -H "Authorization: Bearer <seu_token>" http://localhost:8000/generate
    ```
-   - **Resposta:**
+- **Resposta:**
    ```
    {"message":"Senha gerada com sucesso!","password":"a1b2c3d4e5f6g7h8"}
    ```
 
 ### 5. Listar Senhas
-   - **Método:** `GET`
-   - **URL:** `/passwords`
-   - **Descrição:** Retorna todas as senhas salvas no banco de dados.
+- **Método:** `GET`
+- **URL:** `/passwords`
+- **Descrição:** Retorna todas as senhas salvas no banco de dados.
    ```
    curl -H "Authorization: Bearer <seu_token>" http://localhost:8000/passwords
    ```
-   - **Resposta:**
+- **Resposta:**
    ```
    [
    {"id":1,"password":"a1b2c3d4e5f6g7h8","created_at":"2023-10-10 12:34:56"},
@@ -177,62 +205,102 @@ A API estará disponível em http://localhost:8000.
    ```
 
 ### 6.Atualizar Senha
-   - **Método:** `PUT`
-   - **URL:** `/passwords/:id`
-   - **Descrição:** Atualiza uma senha existente com base no ID.
+- **Método:** `PUT`
+- **URL:** `/passwords/:id`
+- **Descrição:** Atualiza uma senha existente com base no ID.
    ```
    curl -X PUT -H "Authorization: Bearer <seu_token>" -H "Content-Type: application/json" -d '{"password":"novaSenha123"}' http://localhost:8000/passwords/1
    ```
-   - **Resposta:**
+- **Resposta:**
    ```
    {"message":"Senha atualizada com sucesso!","password":"novaSenha123"}
    ```
 
 ### 7. Deletar Senha
-   - **Método:** `DELETE`
-   - **URL:** `/passwords/:id`
-   - **Descrição:** Remove uma senha do banco de dados com base no ID.
+- **Método:** `DELETE`
+- **URL:** `/passwords/:id`
+- **Descrição:** Remove uma senha do banco de dados com base no ID.
    ```
    curl -X DELETE -H "Authorization: Bearer <seu_token>" http://localhost:8000/passwords/1
    ```
-   - **Resposta:**
+- **Resposta:**
    ```
    {"message":"Senha removida com sucesso!"}
    ```
 
+---
+
 ## Histórico de Atualizações
-   - 22/03/2025: Criação do projeto **PasswordGenerator** com funcionalidades básicas de geração, listagem, atualização e exclusão de senhas.
-   - 23/03/2025: Adicionada a funcionalidade de **autenticação JWT** para proteger a API e garantir que apenas usuários autorizados possam acessar e gerenciar as senhas.
-   - 24/03/2025: Adicionada funcionalidade de validação e tratamento de erros.
+- 22/03/2025: Criação do projeto **PasswordGenerator** com funcionalidades básicas de geração, listagem, atualização e 
+exclusão de senhas.
+- 23/03/2025: Adicionada a funcionalidade de **autenticação JWT** para proteger a API e garantir que apenas usuários 
+autorizados possam acessar e gerenciar as senhas.
+- 24/03/2025: Adicionada funcionalidade de validação e tratamento de erros.
+- 26/03/2025: Implementados **testes automatizados** com PHPUnit para garantir a qualidade e a confiabilidade do 
+código, incluindo testes unitários e de integração.
+
+---
+
+## Testes Automatizados
+
+### **Testes Unitários**
+Os testes unitários verificam funcionalidades específicas e isoladas da aplicação:
+- **UserValidationTest:**
+  - Valida cenários relacionados à função de validação de registros de usuários, garantindo que nomes de usuário e 
+  senhas estejam dentro dos padrões esperados.
+- **ValidationTest:**
+  - Testa outras funções de validação, como verificação de senha, para assegurar que os dados atendem aos 
+  critérios definidos.
+
+### **Testes de Integração**
+Os testes de integração verificam o funcionamento completo das rotas e sua interação com o sistema:
+- **GeneratePasswordTest:**
+  - Testa a rota `/generate` para verificar se ela gera uma nova senha com sucesso, utilizando um token JWT válido.
+- **ProtectedRouteTest:**
+  - Valida se o acesso a rotas protegidas, como `/passwords`, retorna erro quando o token JWT não está presente 
+  ou é inválido.
+- **RegisterRouteTest:**
+  - Testa a rota `/register`, garantindo que novos usuários sejam registrados corretamente e que duplicações 
+  sejam evitadas.
+
+---
 
 ## Como Contribuir
-   - Contribuições são bem-vindas! Siga os passos abaixo para contribuir com o projeto:
+- Contribuições são bem-vindas! Siga os passos abaixo para contribuir com o projeto:
+
+---
 
 ## Faça um fork do repositório.
-   - Crie uma branch para sua feature ou correção:
+- Crie uma branch para sua feature ou correção:
    ```
    git checkout -b minha-feature
    ```
-   - Faça commit das suas alterações:
+- Faça commit das suas alterações:
    ```
    git commit -m "Adiciona nova funcionalidade"
    ```
-   - Envie as alterações para o repositório remoto:
+- Envie as alterações para o repositório remoto:
    ```
    git push origin minha-feature
    ```
-   - Abra um Pull Request no repositório original.
+- Abra um Pull Request no repositório original.
+
+---
 
 ## Licença
 Este projeto está licenciado sob a `MIT License`. Veja o arquivo `LICENSE` para mais detalhes.
 
+---
+
 ## Contato
 Se tiver dúvidas ou sugestões, entre em contato:
 
-   - **Nome:** `Luciano Rocha`
-   - **E-mail:** `lgomesroc2012@gmail.com`
-   - **GitHub:** `lgomesroc`
+- **Nome:** `Luciano Rocha`
+- **E-mail:** `lgomesroc2012@gmail.com`
+- **GitHub:** `lgomesroc`
+
+---
 
 ## Agradecimentos
-   - À comunidade Flight PHP por fornecer um framework simples e eficiente.
-   - Aos mantenedores do Docker e Composer por facilitar o desenvolvimento e a implantação de aplicações.
+- À comunidade Flight PHP por fornecer um framework simples e eficiente.
+- Aos mantenedores do Docker e Composer por facilitar o desenvolvimento e a implantação de aplicações.

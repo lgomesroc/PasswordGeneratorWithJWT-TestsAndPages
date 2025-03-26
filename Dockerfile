@@ -20,6 +20,9 @@ WORKDIR /var/www/html
 COPY . .
 RUN composer require respect/validation firebase/php-jwt mikecao/flight && composer install
 
+# Instalar PHPUnit como dependência de desenvolvimento
+RUN composer require --dev phpunit/phpunit
+
 # Expor a porta do servidor PHP
 EXPOSE 8000
 
