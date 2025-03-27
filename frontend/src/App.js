@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './Login';
 import Dashboard from './Dashboard';
 import Register from './Register'; // Importando o componente Register
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 const App = () => {
     return (

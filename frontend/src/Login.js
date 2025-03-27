@@ -27,39 +27,44 @@ const Login = () => {
     };
 
     return (
-        <div style={{ maxWidth: '300px', margin: 'auto', textAlign: 'center' }}>
-            <h2>Login</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    name="username"
-                    placeholder="Usuário"
-                    value={formData.username}
-                    onChange={handleChange}
-                    required
-                    style={{ marginBottom: '10px', width: '100%' }}
-                />
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Senha"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                    style={{ marginBottom: '20px', width: '100%' }}
-                />
-                <button type="submit" style={{ marginBottom: '10px', width: '100%' }}>
-                    Entrar
+        <div className="container d-flex justify-content-center align-items-center vh-100">
+            <div className="card p-4 shadow-lg" style={{ maxWidth: '400px', width: '100%' }}>
+                <h2 className="text-center mb-4">Login</h2>
+                {error && <div className="alert alert-danger">{error}</div>}
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-3">
+                        <label className="form-label">Usuário</label>
+                        <input
+                            type="text"
+                            name="username"
+                            className="form-control"
+                            placeholder="Digite seu usuário"
+                            value={formData.username}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Senha</label>
+                        <input
+                            type="password"
+                            name="password"
+                            className="form-control"
+                            placeholder="Digite sua senha"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <button type="submit" className="btn btn-primary w-100">Entrar</button>
+                </form>
+                <button
+                    onClick={() => (window.location.href = '/register')}
+                    className="btn btn-link w-100 mt-3"
+                >
+                    Cadastrar Usuário
                 </button>
-            </form>
-            {/* Botão de redirecionamento para a página de registro */}
-            <button
-                onClick={() => (window.location.href = '/register')}
-                style={{ marginTop: '10px', backgroundColor: '#4caf50', color: 'white', width: '100%' }}
-            >
-                Cadastrar Usuário
-            </button>
+            </div>
         </div>
     );
 };

@@ -43,23 +43,24 @@ const Dashboard = () => {
     }, []);
 
     return (
-        <div style={{ maxWidth: '600px', margin: 'auto', textAlign: 'center' }}>
-            <h2>Dashboard</h2>
-            <div>
+        <div className="container mt-5">
+            <h2 className="text-center mb-4">Dashboard</h2>
+            <div className="text-end">
+                <button onClick={logout} className="btn btn-danger mb-4">Logout</button>
+            </div>
+            <div className="card p-4 shadow-lg">
                 <h3>Senhas:</h3>
-                <ul>
+                <ul className="list-group">
                     {passwords.map((password) => (
-                        <li key={password.id}>
+                        <li key={password.id} className="list-group-item">
                             {password.password} - {password.created_at}
                         </li>
                     ))}
                 </ul>
-                <button onClick={generatePassword}>Gerar Nova Senha</button>
-                {newPassword && <p>Nova senha gerada: {newPassword}</p>}
-                {/* Botão de deslogar */}
-                <button onClick={logout} style={{ marginTop: '20px', backgroundColor: 'red', color: 'white' }}>
-                    Deslogar
+                <button onClick={generatePassword} className="btn btn-primary mt-4">
+                    Gerar Nova Senha
                 </button>
+                {newPassword && <p className="mt-3 text-success">Nova senha gerada: {newPassword}</p>}
             </div>
         </div>
     );

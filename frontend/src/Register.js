@@ -27,35 +27,45 @@ const Register = () => {
     };
 
     return (
-        <div style={{ maxWidth: '300px', margin: 'auto', textAlign: 'center' }}>
-            <h2>Cadastrar Usuário</h2>
-            {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    name="username"
-                    placeholder="Usuário"
-                    value={formData.username}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Senha"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                />
-                <button type="submit">Cadastrar</button>
-            </form>
-            <button
-                onClick={() => (window.location.href = '/')}
-                style={{ marginTop: '20px' }}
-            >
-                Voltar ao Login
-            </button>
+        <div className="container d-flex justify-content-center align-items-center vh-100">
+            <div className="card p-4 shadow-lg" style={{ maxWidth: '400px', width: '100%' }}>
+                <h2 className="text-center mb-4">Cadastrar Usuário</h2>
+                {successMessage && <div className="alert alert-success">{successMessage}</div>}
+                {error && <div className="alert alert-danger">{error}</div>}
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-3">
+                        <label className="form-label">Usuário</label>
+                        <input
+                            type="text"
+                            name="username"
+                            className="form-control"
+                            placeholder="Digite seu usuário"
+                            value={formData.username}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Senha</label>
+                        <input
+                            type="password"
+                            name="password"
+                            className="form-control"
+                            placeholder="Digite sua senha"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <button type="submit" className="btn btn-success w-100">Cadastrar</button>
+                </form>
+                <button
+                    onClick={() => (window.location.href = '/')}
+                    className="btn btn-link w-100 mt-3"
+                >
+                    Voltar ao Login
+                </button>
+            </div>
         </div>
     );
 };

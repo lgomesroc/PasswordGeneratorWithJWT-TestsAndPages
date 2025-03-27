@@ -5,27 +5,28 @@ gerar, listar, atualizar e deletar senhas de forma segura e eficiente.
 ## Funcionalidades
 
 ### **Backend**
-- **Gerar senha:** Gera uma senha aleatória de 16 caracteres e a salva no banco de dados.
-- **Listar senhas:** Retorna todas as senhas salvas no banco de dados.
-- **Atualizar senha:** Atualiza uma senha existente com base no ID.
-- **Deletar senha:** Remove uma senha do banco de dados com base no ID.
-- **Autenticação JWT:** Protege a API para que apenas usuários autorizados possam acessar e gerenciar as senhas.
-- **Registro de usuários:** Permite a criação de contas com validação de dados.
-- **Tratamento de erros:** Valida os dados enviados, retornando mensagens claras em caso de inconsistências.
-- **Teste automatizado:** Validação de rotas, autenticação e tratamento de dados usando PHPUnit.
-- **Documentação da API:** Todas as rotas foram documentadas usando Swagger, permitindo gerar documentação interativa 
+- **Gerar senha:** gera uma senha aleatória de 16 caracteres e a salva no banco de dados.
+- **Listar senhas:** retorna todas as senhas salvas no banco de dados.
+- **Atualizar senha:** atualiza uma senha existente com base no ID.
+- **Deletar senha:** remove uma senha do banco de dados com base no ID.
+- **Autenticação JWT:** protege a API para que apenas usuários autorizados possam acessar e gerenciar as senhas.
+- **Registro de usuários:** permite a criação de contas com validação de dados.
+- **Tratamento de erros:** valida os dados enviados, retornando mensagens claras em caso de inconsistências.
+- **Teste automatizado:** validação de rotas, autenticação e tratamento de dados usando PHPUnit.
+- **Documentação da API:** todas as rotas foram documentadas usando Swagger, permitindo gerar documentação interativa 
 e facilitar o consumo da API por desenvolvedores.
 ---
 
 ### **Frontend**
-- **Login de usuários:** Permite que usuários façam login com `username` e `password`, recebendo um token JWT.
-- **Exibir senhas:** Lista as senhas do usuário logado, integrando com a API do backend.
-- **Gerar nova senha:** Inclui um botão para solicitar uma nova senha, utilizando o token JWT para autenticação.
-- **Logout:** Permite que o usuário encerre a sessão removendo o token JWT do armazenamento local.
-- **Cadastro de usuários:** Adicionada funcionalidade para criar novos usuários, integrando com a API do backend.
-- **Interface intuitiva:** Navegação facilitada com React Router DOM, estilização limpa com Bootstrap, e 
+- **Login de usuários:** permite que usuários façam login com `username` e `password`, recebendo um token JWT.
+- **Exibir senhas:** lista as senhas do usuário logado, integrando com a API do backend.
+- **Gerar nova senha:** inclui um botão para solicitar uma nova senha, utilizando o token JWT para autenticação.
+- **Logout:** permite que o usuário encerre a sessão removendo o token JWT do armazenamento local.
+- **Cadastro de usuários:** adicionada funcionalidade para criar novos usuários, integrando com a API do backend.
+- **Interface intuitiva:** navegação facilitada com React Router DOM, estilização limpa com Bootstrap, e 
 requisições eficientes usando Axios.
-
+- **Estilização aprimorada:** formulários, botões e layouts foram refinados para melhorar a experiência do usuário, 
+mantendo a navegação simples e eficiente.
 
 ---
 
@@ -97,7 +98,7 @@ docker-compose up -d
 #### Entrar no contêiner
 Para entrar no contêiner, digite o seguinte comando:
 ```
-docker exec -it flight_senhas_app bash
+docker exec -it password_generation_backend bash
 ```
 
 ---
@@ -248,6 +249,13 @@ do código, incluindo testes unitários e de integração.
   requisições e estilização.
   - Implementado suporte para execução do projeto completo (frontend e backend) utilizando 
   **Docker** com `docker-compose`.
+  - Instalado o **Swagger** para geração de documentação interativa da API.
+  - Documentadas todas as rotas da API utilizando `zircote/swagger-php`, proporcionando suporte para visualização
+  e consumo por desenvolvedores.
+  - Adicionada **responsividade ao frontend**, garantindo que as páginas se adaptem a diferentes dispositivos 
+  (celulares, tablets e desktops) com o uso do **Bootstrap**.
+  - Refinada a **estilização do frontend**, trazendo uma interface moderna e intuitiva para melhorar a 
+  experiência do usuário.
 
 ---
 
@@ -290,7 +298,7 @@ docker logs password_generator_frontend
 ### Executando o Frontend
 
 Para rodar o frontend do projeto localmente de forma automática, siga os passos abaixo:
-
+ 
 1. **Acesse a pasta do frontend:**
    No terminal, navegue para o diretório onde o frontend está localizado:
 ```
@@ -298,8 +306,10 @@ cd frontend
 ```
 2. **Inicie o servidor de desenvolvimento:** execute o seguinte comando para iniciar o React:
 
-bash
+```
 npm start
+```
+
 3. **Confirme o redirecionamento da porta:** caso a porta padrão 3000 já esteja em uso, o React perguntará se deseja 
 rodar o projeto em uma porta alternativa (por exemplo, 3001). Responda Y (sim) quando solicitado. Após isso, o 
 projeto abrirá automaticamente no navegador na URL correspondente, como:
