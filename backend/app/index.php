@@ -1,11 +1,31 @@
 <?php
 
+/**
+ * @OA\Info(
+ *     title="Gerador de Senhas API",
+ *     version="1.0.0",
+ *     description="API para gerenciar usuários, autenticação e geração de senhas aleatórias"
+ * )
+ */
+
+// Headers para habilitar CORS
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Authorization, Content-Type");
+
+// Tratamento para requisições OPTIONS (pré-flight)
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
 require __DIR__ . '/../vendor/autoload.php';
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Respect\Validation\Validator as v;
 
+// Configuração do banco de dados
 $db = new SQLite3('database.db');
 
 // Chave secreta para assinar os tokens JWT
@@ -69,11 +89,42 @@ Flight::map('error', function(Exception $ex) {
     ], $ex->getCode() ?: 400);
 });
 
+/**
+ * @OA\Get(
+ *     path="/",
+ *     summary="Verificar se a API está funcionando",
+ *     @OA\Response(
+ *         response=200,
+ *         description="API está funcionando"
+ *     )
+ */
 // Rota principal
 Flight::route('GET /', function(){
     Flight::json(["message" => "Gerador de senhas API está rodando"]);
 });
 
+/**
+ * @OA\Post(
+ *     path="/register",
+ *     summary="Registrar um novo usuário",
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="username", type="string"),
+ *             @OA\Property(property="password", type="string")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Usuário registrado com sucesso"
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Erro de validação"
+ *     )
+ * )
+ */
 // Rota para registrar um novo usuário
 Flight::route('POST /register', function() use ($db) {
     try {
@@ -104,6 +155,32 @@ Flight::route('POST /register', function() use ($db) {
     }
 });
 
+/**
+ * @OA\Post(
+ *     path="/login",
+ *     summary="Fazer login",
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="username", type="string"),
+ *             @OA\Property(property="password", type="string")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Token gerado com sucesso",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="token", type="string")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Usuário ou senha inválidos"
+ *     )
+ * )
+ */
 // Rota para autenticar um usuário e gerar um token JWT
 Flight::route('POST /login', function() use ($db, $jwtKey) {
     try {
@@ -135,6 +212,25 @@ Flight::route('POST /login', function() use ($db, $jwtKey) {
     }
 });
 
+/**
+ * @OA\Post(
+ *     path="/generate",
+ *     summary="Gerar uma nova senha",
+ *     @OA\Response(
+ *         response=200,
+ *         description="Senha gerada com sucesso",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="message", type="string"),
+ *             @OA\Property(property="password", type="string")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Erro ao gerar senha"
+ *     )
+ * )
+ */
 // Rota para gerar uma nova senha
 Flight::route('POST /generate', function() use ($db) {
     try {
@@ -149,6 +245,24 @@ Flight::route('POST /generate', function() use ($db) {
     }
 });
 
+/**
+ * @OA\Get(
+ *     path="/passwords",
+ *     summary="Listar todas as senhas",
+ *     @OA\Response(
+ *         response=200,
+ *         description="Lista de senhas",
+ *         @OA\JsonContent(
+ *             type="array",
+ *             @OA\Items(type="object")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Erro ao buscar senhas"
+ *     )
+ * )
+ */
 // Rota para listar todas as senhas
 Flight::route('GET /passwords', function() use ($db) {
     try {
@@ -163,6 +277,43 @@ Flight::route('GET /passwords', function() use ($db) {
     }
 });
 
+/**
+ * @OA\Put(
+ *     path="/passwords/{id}",
+ *     summary="Atualizar uma senha existente",
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         description="ID da senha que será atualizada",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="password", type="string")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Senha atualizada com sucesso",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="message", type="string"),
+ *             @OA\Property(property="password", type="string")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Senha não encontrada"
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Erro ao validar os dados"
+ *     )
+ * )
+ */
 // Rota para atualizar uma senha
 Flight::route('PUT /passwords/@id', function($id) use ($db) {
     try {
@@ -188,6 +339,35 @@ Flight::route('PUT /passwords/@id', function($id) use ($db) {
     }
 });
 
+/**
+ * @OA\Delete(
+ *     path="/passwords/{id}",
+ *     summary="Deletar uma senha existente",
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         description="ID da senha que será deletada",
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Senha removida com sucesso",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="message", type="string")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Senha não encontrada"
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Erro ao processar a requisição"
+ *     )
+ * )
+ */
 // Rota para deletar uma senha
 Flight::route('DELETE /passwords/@id', function($id) use ($db) {
     try {

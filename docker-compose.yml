@@ -1,9 +1,24 @@
+version: '3.8'
+
 services:
-  app:
-    build: .
-    container_name: flight_senhas_app
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: password_generator_backend
     ports:
       - "8000:8000"
     restart: unless-stopped
     volumes:
-      - .:/var/www/html
+      - ./backend:/var/www/backend
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: password_generator_frontend
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    volumes:
+      - ./frontend:/app

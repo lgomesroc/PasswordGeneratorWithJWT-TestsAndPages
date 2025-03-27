@@ -15,13 +15,14 @@ RUN docker-php-ext-install pdo pdo_sqlite
 # Instalar o Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Instalar pacotes via Composer (incluindo Respect/Validation e Firebase JWT)
-WORKDIR /var/www/html
-COPY . .
-RUN composer require respect/validation firebase/php-jwt mikecao/flight && composer install
+# Definir o diretório de trabalho
+WORKDIR /var/www/backend
 
-# Instalar PHPUnit como dependência de desenvolvimento
-RUN composer require --dev phpunit/phpunit
+# Copiar os arquivos do backend para o contêiner
+COPY . .
+
+# Instalar dependências incluindo Swagger
+RUN composer install && composer require zircote/swagger-php
 
 # Expor a porta do servidor PHP
 EXPOSE 8000

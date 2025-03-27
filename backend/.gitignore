@@ -25,7 +25,7 @@
 *.sqlite
 
 # Ignorar arquivos de cache do Composer
-/composer.lock
+/backend/composer.lock
 
 # Ignorar arquivos de log
 *.log
@@ -65,7 +65,7 @@
 /xdebug.log
 
 # Ignorar arquivos de cache do PHPStan
-/.phpunit.result.cache
+/backend/.phpunit.result.cache
 /.php-cs-fixer.cache
 
 # Ignorar arquivos de cache do Psalm
