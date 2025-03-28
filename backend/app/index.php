@@ -381,4 +381,80 @@ Flight::route('DELETE /passwords/@id', function($id) use ($db) {
     }
 });
 
+/**
+ * @OA\Post(
+ *     path="/google-login",
+ *     summary="Login com Google",
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="token", type="string")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Login bem-sucedido",
+ *         @OA\JsonContent(
+ *             type="object",
+ *             @OA\Property(property="token", type="string")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Token inválido"
+ *     )
+ * )
+ */
+// Rota para login com Google
+Flight::route('POST /google-login', function() use ($db, $jwtKey) {
+    try {
+        $data = Flight::request()->data->getData();
+        $googleToken = $data['token'];
+
+        // Verificar o token do Google (substitua isso por uma biblioteca própria ou use CURL)
+        $client = new \Google\Client();
+        $client->setClientId('850596070121-ualv9v1r7ut9c1au0698ikp28244q8vt.apps.googleusercontent.com');// Substitua pelo seu Client ID
+        $payload = $client->verifyIdToken($googleToken);
+
+        if (!$payload) {
+            throw new Exception("Token do Google inválido.", 401);
+        }
+
+        // Extração dos dados do usuário
+        $googleUserId = $payload['sub'];
+        $email = $payload['email'];
+        $name = $payload['name'];
+
+        // Verificar se o usuário já existe no banco de dados
+        $query = $db->prepare("SELECT id FROM users WHERE username = :email");
+        $query->bindValue(':email', $email, SQLITE3_TEXT);
+        $result = $query->execute();
+        $user = $result->fetchArray(SQLITE3_ASSOC);
+
+        if (!$user) {
+            // Criar novo usuário, se não existir
+            $query = $db->prepare("INSERT INTO users (username, password) VALUES (:email, :password)");
+            $query->bindValue(':email', $email, SQLITE3_TEXT);
+            $query->bindValue(':password', password_hash($googleUserId, PASSWORD_BCRYPT), SQLITE3_TEXT); // Usar ID do Google como senha
+            $query->execute();
+            $userId = $db->lastInsertRowID();
+        } else {
+            $userId = $user['id'];
+        }
+
+        // Gerar token JWT
+        $payload = [
+            "user_id" => $userId,
+            "username" => $email,
+            "exp" => time() + 3600 // Token expira em 1 hora
+        ];
+        $jwt = JWT::encode($payload, $jwtKey, 'HS256');
+
+        Flight::json(["token" => $jwt]);
+    } catch (Exception $e) {
+        Flight::json(["message" => $e->getMessage()], $e->getCode() ?: 400);
+    }
+});
+
 Flight::start();

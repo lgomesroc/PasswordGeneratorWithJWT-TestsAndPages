@@ -15,6 +15,9 @@ RUN docker-php-ext-install pdo pdo_sqlite
 # Instalar o Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Instalar o ngrok usando o comando oficial
+RUN snap install ngrok
+
 # Definir o diretório de trabalho
 WORKDIR /var/www/backend
 
